@@ -3,6 +3,7 @@ from royalties.models import Artist, Track, RoyaltyRecord, Payment
 from django.utils import timezone
 from django.urls import reverse
 from django.core.management import call_command
+from django.contrib.auth.models import User
 
 # Create your tests here.
 
@@ -74,3 +75,33 @@ class MarkPaymentAsPaidTest(TestCase):
         self.assertEqual(self.payment.status, "paid")
         self.assertIsNotNone(self.payment.paid_date)
 
+class AuthenticatedArtistTest(TestCase):
+    def setUp(self):
+        # 1. Create user
+        self.user = User.objects.create_user(username='artistuser', password='testpass123')
+
+        # 2. Create artist linked to user
+        self.artist = Artist.objects.create(
+            user=self.user,
+            name='Test Artist',
+            genre='EDM',
+            agency='Indie',
+            join_date=timezone.now()
+        )
+
+        # 3. Create a track (optional)
+        self.track = Track.objects.create(
+            title='Test Track',
+            artist=self.artist,
+            release_date=timezone.now(),
+            duration=210
+        )
+
+        # 4. Log in the test client
+        self.client.login(username='artistuser', password='testpass123')
+        
+    def test_dashboard_view_authenticated(self):
+        url = f'/artist/{self.artist.id}/dashboard/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.artist.name)
