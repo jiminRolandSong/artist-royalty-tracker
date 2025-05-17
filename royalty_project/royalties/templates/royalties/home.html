@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Royalty Tracker Home</title>
+</head>
+<body>
+    <h1>🎵 Welcome to the Artist Royalty Tracker</h1>
+
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <p><a href="{% url 'my_dashboard' %}">🔗 Go to My Dashboard</a></p>
+
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">🚪 Logout</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">🔐 Login</a> to view your dashboard.</p>
+    {% endif %}
+
+    <hr>
+    <h2>Public API Endpoints:</h2>
+    <ul>
+        <li><a href="/api/payments/pending/">Pending Payments API</a></li>
+        <li><a href="/api/artist/1/summary/">Sample Artist Summary</a></li>
+        <li><a href="/admin/">Admin Panel</a></li>
+    </ul>
+
+    <hr>
+    <p style="color:gray;">Built with Django + PostgreSQL for backend showcase purposes.</p>
+</body>
+</html>
