@@ -2,8 +2,7 @@
 *.pyc
 __pycache__/
 .env
-.venv/
 db.sqlite3
 *.log
 .idea/
-*.DS_Store"venv/" 
+venv
